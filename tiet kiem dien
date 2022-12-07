@@ -52,74 +52,75 @@ Output:
 
 #include<iostream>
 using namespace std;
-int den[1000];
-int n,k;
-int luu[1001];
-int dent;
-int max1;
-void saochep(int tam[1000]){
-
-	for(int i=0;i<n;i++){
-
-		tam[i]=den[i];
-	}
-}
-void back_track(int x){
-	if(x>3) {
-
-		int den1[1001];
-		saochep(den1);
-		int tam=dent;
-		for(int i=1;i<=k;i++){
-			if(luu[i]==1){	
-				for(int j=0;j<=n;j++){
-
-							if( (i+j*(i+1))<=n){
-
-                                if(den1[i+j*(i+1)]==0){
-                                    den1[i+j*(i+1)]=1;
-                                    tam--;
-                                }
-                                else if(den1[i+j*(i+1)]==1){
-                                    den1[i+j*(i+1)]=0;
-                                    tam++;
-                                }
-						}
-                    else break;
-					
-				}
+int N, K, d[102],dd[102] ,ans,visitK[12], re[4];
+int Calculator()
+{
+	for(int j=1;j<=3;j++)
+	{
+		if(re[j]!=0)
+		{
+			int q=re[j]+1;
+			for(int k=re[j];k<=N; k=k+q)
+			{
+				dd[k] = 1-dd[k];
 			}
 		}
-		if(tam>max1) max1=tam;
-		return ;
-
 	}
-	for(int i=0;i<=1;i++){
-
-		luu[x]=i;
-		back_track(x+1);
+	int dem=0;
+	for(int i=1;i<=N;i++)
+	{
+		if(dd[i]==0)
+			dem++;
 	}
+	return dem;
 }
-int main(){
-
-	//freopen("input.txt","r",stdin);
-	int t;
-	cin>>t;
-	for(int tc=1;tc<=t;tc++){
+void bt(int i, int start)
+{
+	if(i==4)
+	{
 		
-		dent=0;
-		cin>>n>>k;
-		for(int i=1;i<=n;i++){
+		for(int k=1;k<=N; k++)
+			{
+				dd[k] = d[k];
+			}
+		int k=Calculator();
+		
 
-			cin>>den[i];
-			if(den[i]==0) dent++;
-		}
-		max1=dent;
-		back_track(1);
-		cout<<"#"<<tc<<" "<<max1<<endl;
+		
+		if(k > ans)
+			ans=k;
+		return;
 	}
-	
-
+	for(int j=start;j<=K;j++)
+	{
+		if(visitK[j]==0)
+		{
+			visitK[j]=1;
+			re[i]=j;
+			bt(i+1, start+1);
+			visitK[j]=0;
+			re[i]=0;
+		}
+	}
+	bt(i+1, start);
+}
+int main()
+{
+	freopen("input.txt", "r", stdin);
+	int tc;
+	cin >> tc;
+	for(int t=1;t<=tc;t++)
+	{
+		cin >> N >> K;
+		ans=0;
+		for(int i=1;i<=N;i++){
+			cin >> d[i];
+			if(d[i]==0)
+				ans++;
+		}
+		bt(1, 1);
+		cout << "#" << t << " " << ans << endl;
+	}
 	return 0;
 }
 
