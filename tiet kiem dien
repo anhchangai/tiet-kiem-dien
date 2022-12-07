@@ -1151,19 +1151,16 @@ void dungKhoa(int k)
 }
 void bTdungKhoa(int k)
 {
-	int id = 0 ; 
-	for(int i = 1; i <= n ; i++)
+	int i = k ; 
+	while(i<=n)
 	{
-		if(i == k + id*(k+1))
-		{
-			A[i] = 1 - A[i] ; 
-			id++ ; 
-		}
+		A[i] = 1 - A[i] ; 
+		i += (k+1) ; 
 	}
 }
 void th(int id)
 {
-	if(id == 0)
+	if(id == 3)
 	{
 		int d = 0 ; 
 		for(int i = 1 ; i <= n ; i++)
@@ -1173,6 +1170,12 @@ void th(int id)
 				d++ ; 
 			}
 		}
+
+		/*for(int i = 0 ; i < id ; i++)
+		{
+			cout << result[i] << " " ; 
+		}
+		cout << endl ; */
 		if(max1 < d) 
 		{
 			max1 = d ; 
@@ -1184,7 +1187,7 @@ void th(int id)
 	{ 
 		result[id] = i ; 
 		dungKhoa(i);  
-		th(id-1) ;
+		th(id+1) ;
 		bTdungKhoa(i) ; 
 	}
 }
@@ -1199,12 +1202,12 @@ int main()
 		max1 = 0 ; 
 		for(int i = 1 ; i <= n ; i++)
 		{
-			cin >> A[i] ; 
+			cin >> A[i] ;  
 		}
-		th(3) ; 
-		th(2) ; 
-		th(1) ; 
 		th(0) ; 
+		th(1) ; 
+		th(2) ; 
+		th(3) ; 
 		cout << "#" <<tc << " " << max1 << endl ; 
 	}
 	return 0 ; 
