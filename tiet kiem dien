@@ -1171,12 +1171,6 @@ void th(int id)
 				d++ ; 
 			}
 		}
-
-		/*for(int i = 0 ; i < id ; i++)
-		{
-			cout << result[i] << " " ; 
-		}
-		cout << endl ; */
 		if(max1 < d) 
 		{
 			max1 = d ; 
@@ -1186,11 +1180,11 @@ void th(int id)
 
 	for(int i = 1 ; i <= k ; i++)
 	{ 
-		result[id] = i ; 
 		dungKhoa(i);  
 		th(id+1) ;
 		bTdungKhoa(i) ; 
 	}
+	th(id+1) ; 
 }
 int main()
 {
@@ -1206,9 +1200,6 @@ int main()
 			cin >> A[i] ;  
 		}
 		th(0) ; 
-		th(1) ; 
-		th(2) ; 
-		th(3) ; 
 		cout << "#" <<tc << " " << max1 << endl ; 
 	}
 	return 0 ; 
