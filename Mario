@@ -1,0 +1,109 @@
+#include <iostream>
+using namespace std ; 
+int n , m ; 
+int A[51][51] ; 
+int vs[51][51]; 
+int xS , yS ; 
+int dx[60][4] ; 
+int dy[4] = {-1,0,0,1} ; 
+int Qx[10000] ; 
+int Qy[10000] ; 
+int f = -1 ; 
+int r = -1 ; 
+int dem ; 
+int kq ; 
+void sinhDx(int x)
+{
+	dx[x][0] = 0 ; 
+	dx[x][1] = x ; 
+	dx[x][2] = -x ; 
+	dx[x][3] = 0 ; 
+}
+bool bfs(int x , int y , int ix)
+{
+	vs[x][y] = 1; 
+	for(int i = 1 ; i <= ix ; i++)
+	{
+		sinhDx(i) ; 
+	}
+	vs[x][y] = 1 ; 
+	f= r = -1 ; 
+	Qx[++r] = x ; 
+	Qy[r] = y ; 
+	while(f!=r)
+	{
+		x = Qx[++f] ; 
+		y = Qy[f] ; 
+		for(int i = 0 ; i < 4 ;i++)
+		{
+			int yy = y + dy[i] ; 
+			for(int j = 1 ; j <= ix ; j++)
+			{
+				int xx = x + dx[j][i] ; 
+				if(xx>=0 && xx<n && yy>=0 && yy<m )
+				{
+					if(!vs[xx][yy] && A[xx][yy] == 1)
+					{
+						vs[xx][yy] = 1 ;
+						Qx[++r] = xx ; 
+						Qy[r] = yy ; 
+					}
+					if(A[xx][yy] == 3)
+					{
+						return true ; 
+					}
+				}
+			}
+		}
+
+	}
+	return false ; 
+}
+void reset()
+{
+	for(int i = 0 ; i < n ; i++)
+	{
+		for(int j = 0 ; j < m ; j++)
+		{
+			vs[i][j] = 0 ; 
+		}
+	}
+}
+int main()
+{
+	freopen("input.txt" , "r" , stdin) ; 
+	int T ; 
+	cin >> T ; 
+	for(int tc = 1 ; tc <= T ; tc ++)
+	{
+		cin >> n >> m ; 
+		dem = 1 ;
+		kq = 0 ; 
+		for(int i = 0 ; i < n ; i++)
+		{
+			for(int j = 0 ; j < m ; j++)
+			{
+				cin >> A[i][j] ; 
+				vs[i][j] = 0 ; 
+				if(A[i][j] == 2)
+				{
+					xS = i ; 
+					yS = j ; 
+				}
+			}
+		}
+		while(1)
+		{
+			if(bfs(xS,yS,dem))
+			{
+				kq = dem ; 
+				break ; 
+			}
+			reset() ; 
+			dem++ ; 
+		}
+		cout << "Case #" << tc << endl ; 
+		cout << kq << endl; 
+	}
+	return 0 ; 
+}
