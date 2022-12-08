@@ -1,0 +1,154 @@
+#include <iostream>
+#define MAXN 700
+using namespace std ; 
+
+int n , m ; 
+int A[MAXN][MAXN] ; 
+int vs[MAXN][MAXN] ; 
+int f = -1 ; 
+int r = -1 ; 
+int dx[8] = {-1,0,0,1,1,1,-1,-1} ; 
+int dy[8] = {0,-1,1,0,1,-1,1,-1} ; 
+long Qx[500000] ; 
+long Qy[500000] ; 
+bool check = true ; 
+int kq ; 
+void bfs(int x , int y)
+{
+	check = true ; 
+	vs[x][y] = 1 ; 
+	f= r = -1 ; 
+	Qx[++r] = x ; 
+	Qy[r] = y ; 
+	while(f!=r)
+	{
+		x = Qx[++f] ; 
+		y = Qy[f] ; 
+
+		for(int i = 0 ; i < 8 ;i++)
+		{
+			int xx = x + dx[i] ; 
+			int yy = y + dy[i] ; 
+			if(xx>=0 && xx<n && yy>=0 && yy<m )
+			{
+				if(A[xx][yy] > A[x][y])
+				{
+					check = false ; 
+				}
+
+				if(A[xx][yy] == A[x][y] && vs[xx][yy] == 0)
+				{
+					vs[xx][yy] = 1 ; 
+					Qx[++r] = xx ; 
+					Qy[r] = yy ; 
+				}
+
+			}
+		}
+
+	}
+	if(check)
+	{
+		kq++ ; 
+	}
+}
+int main()
+{
+	freopen("input.txt" , "r" , stdin) ; 
+	int T ; 
+	cin >> T ; 
+	for(int tc = 1 ; tc <= T ; tc ++)
+	{
+		cin >> n >> m ; 
+		kq = 0 ; 
+		for(int i = 0 ; i < n ; i++)
+		{
+			for(int j = 0 ; j < m ; j++)
+			{
+				A[i][j] = 0 ; 
+				vs[i][j] = 0 ; 
+				cin >> A[i][j] ;
+			}
+		}
+		for(int i = 0 ; i < n ; i++)
+		{
+			for(int j = 0 ; j < m ; j++)
+			{
+				if(!vs[i][j])
+				{
+					bfs(i,j) ; 
+				}
+			}
+		}
+		cout << "#" << tc << " " << kq << endl ;  ; 
+	}
+	return 0 ; 
+}
+
+
+
+3
+
+8 7
+
+4 3 2 2 1 0 1
+
+3 3 3 2 1 0 1
+
+2 2 2 2 1 0 0
+
+2 1 1 1 1 0 0
+
+1 1 0 0 0 1 0
+
+0 0 0 1 1 1 0
+
+0 1 2 2 1 1 0
+
+0 1 1 1 2 1 0
+
+8 7
+
+4 3 2 2 1 1 1
+
+3 3 3 2 1 0 1
+
+2 2 2 2 1 0 0
+
+2 1 1 1 1 0 0
+
+1 1 0 0 0 1 0
+
+0 0 0 1 1 1 0
+
+0 1 2 2 1 1 0
+
+0 1 1 1 2 1 0
+
+8 7
+
+4 3 2 2 1 1 1
+
+3 3 3 2 1 0 1
+
+2 2 2 2 1 0 0
+
+2 1 1 2 1 0 0
+
+1 1 2 2 0 1 0
+
+0 0 0 2 1 1 0
+
+0 1 2 2 1 1 0
+
+0 1 1 1 2 1 0
+
+ 
+
+[Output]
+
+#1 3
+
+#2 2
+
+#3 1
