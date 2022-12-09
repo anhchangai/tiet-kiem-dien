@@ -288,3 +288,90 @@ int main()
 
 	return 0;
 }
+
+// dung 
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <iostream>
+using namespace std ; 
+int n , e , k , time1 ; 
+int A[110][101];
+float xs[101][101] ; 
+float P[101][101] ; 
+int max(int t)
+{
+	int max1 = 0 ; 
+	for(int i = 1 ; i <= n ; i++ )
+	{
+		if(P[i][t] > P[max1][t])
+		{
+			max1 = i ; 
+		}
+	}
+	for(int i = 1 ; i <= n ; i++ )
+	{
+		if(P[i][t] == P[max1][t])
+		{
+			if(max1 > i)
+			{
+				max1 = i ; 
+			}
+		}	
+	}
+	return max1 ; 
+}
+int main()
+{
+//	freopen("input.txt" , "r" , stdin) ; 
+	for(int tc = 1 ; tc <= 10 ; tc ++)
+	{
+		
+		cin >> n >> e >> k >> time1 ; 
+		for(int i = 1 ; i <= 101 ; i++ )
+		{
+			for(int j = 1 ; j <= 101 ; j++ )
+			{
+				P[i][j] = 0 ; 
+				A[i][j] = 0 ; 
+				xs[i][j] = 0 ; 
+			}
+		}
+		for(int i = 0 ; i < e ; i++)
+		{
+			int x , y ; 
+			float xs1; 
+			cin >> x >> y ;
+			scanf("%f",&xs1);
+			xs[x][y] = 0 ; 
+			A[x][0] ++ ; 
+			A[x][A[x][0]] = y ; 
+			
+			xs[x][y] = (float)xs1 ; 
+		}
+		int t = 1 ; 
+		P[1][1] = 1 ; 
+		while(t <= (time1/10))
+		{
+			for(int i = 1 ; i <= n ; i++)
+			{
+				if(P[i][t] != 0)
+				{
+					for(int j = 1 ; j <= A[i][0]; j++)
+					{
+						P[A[i][j]][t+1] += P[i][t] * xs[i][A[i][j]];
+					}
+				}
+			}
+			t++ ;
+		}
+		int kq1 = max(t) ; 
+		int kq2 = max((time1- k)/10 + 1);
+		printf("#%d %d %.6lf %d %.6lf" , tc,kq1,P[kq1][t] ,kq2, P[kq2][(time1- k)/10 + 1] );
+		//cout << "#" << tc  << " " << kq1 << " " << << " " << kq2 <<" " <<<<  endl ; 
+		cout << endl ; 
+		
+	}
+
+	return 0 ; 
+}
+
