@@ -182,4 +182,69 @@ class Point{
 
 
 
+#define _CRT_SECURE_NO_WARNINGS
 
+#include <iostream>
+using namespace std ; 
+int gate ; 
+int A[25][2] ; 
+int kq = 999999 ; 
+void bt(int id , int sq1, int sq2 , int sq3 , int gia)
+{
+	if(gia > kq) return ; 
+	if(id == gate)
+	{
+		if(gia < kq)
+		{
+			kq = gia ; 
+		}
+		return ;
+	}
+	bt(id+1 , sq1, sq2 , sq3, gia + A[id][1]) ; 
+
+	bt(id+1 ,sq1, sq2, sq3 + A[id][0]  , gia + 2*A[id][1]) ; 
+
+	if(sq1 + sq2 + sq3 >= A[id][0])
+	{
+		int linh = A[id][0] ; 
+		linh -= sq1 ; 
+		if(linh <= 0 )
+		{
+			bt(id+1 ,sq2, sq3, 0, gia) ; 
+		}
+		else 
+		{
+			linh -= sq2 ; 
+			if(linh <= 0)
+			{
+				bt(id+1 ,abs(linh), sq3, 0, gia) ; 
+			}
+			else
+			{
+				linh -= sq3 ; 
+				if(linh <= 0)
+				{
+					bt(id+1 ,0,abs(linh), 0, gia) ; 
+				}
+			}
+		}
+	}
+}
+int main()
+{
+	freopen("input.txt" , "r" , stdin) ; 
+	int T ; 
+	cin >> T ; 
+	for(int tc = 1 ; tc <= T ; tc ++)
+	{
+		cin >> gate ; 
+		kq = 999999 ; 
+		for(int i = 0 ; i < gate ; i++)
+		{
+			cin >> A[i][0] >> A[i][1] ; 
+		}
+		bt(0,0,0,0,0) ; 
+		cout << "#" << tc << " " << kq << endl ; 
+	}
+	return 0 ; 
+}
