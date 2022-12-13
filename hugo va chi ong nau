@@ -747,3 +747,83 @@ class Point{
 	}
 	
 }
+
+
+
+#include<iostream>
+using namespace std;
+int map[15][15], N, M, visit[15][15];
+int dxC[6]={ 0,-1, 0, 1, 1, 1};
+int dxL[6]={-1,-1,-1, 0, 1, 0};
+int dy[6]= {-1, 0, 1, 1, 0,-1};
+
+long ans;
+void bt(int dem, int x, int y, long sum)
+{
+	if(dem==3)
+	{
+		if(ans < sum)
+			ans=sum;
+		return;
+	}
+	for(int i=0;i<6;i++)
+	{
+		if(y%2!=0)
+		{
+			int a=x+dxC[i];
+			int b=y+dy[i];
+			if(a<N && b<M && a>=0 && b>=0)
+			{
+				if(visit[a][b]==0)
+				{
+					visit[a][b]=1;
+					bt(dem+1, a, b, sum+map[a][b]);
+					bt(dem+1, x, y, sum+map[a][b]);
+					visit[a][b]=0;
+				}
+			}
+		}
+		else
+		{
+			int a=x+dxL[i];
+			int b=y+dy[i];
+			if(a<N && b<M && a>=0 && b>=0)
+			{
+				if(visit[a][b]==0)
+				{
+					visit[a][b]=1;
+					bt(dem+1, a, b, sum+map[a][b]);
+					bt(dem+1, x, y, sum+map[a][b]);
+					visit[a][b]=0;
+				}
+			}
+		}
+	}
+}
+int main()
+{
+	//freopen("input.txt", "r", stdin);
+	int tc;
+	cin >> tc;
+	for(int t=1;t<=tc;t++)
+	{
+		cin >> M >> N;
+		for(int i=0;i<N;i++)
+		{
+			for(int j=0;j<M;j++)
+				cin >> map[i][j];
+		}
+		ans=0;
+		for(int i=0;i<N;i++)
+		{
+			for(int j=0;j<M;j++)
+			{
+				visit[i][j]=1;
+				bt(0, i, j, map[i][j]);
+				visit[i][j]=0;
+			}		
+		}
+		cout << "Case #" << t << endl << ans*ans << endl;
+	}
+	return 0;
+}
