@@ -1,0 +1,177 @@
+Level 3
+Làng mạc
+Cho bản đồ mạng lưới giao thông giữa các làng mạc. Một vùng được định nghĩa là một tập hợp các làng mà từ bất kỳ một làng nào trong vùng đều có thể đi đến một làng khác trong vùng.
+
+Hãy tính số vùng trong bản đồ, số làng cô lập (làng không có đường đi đến bất kỳ làng khác) và số con đường đóng vai trò là “Cầu” giữa hai vùng (nếu bỏ con đường này đi thì số lượng vùng tăng lên 1).
+
+Input
+
+Dòng đầu có một số T là số lượng test của file input. Mỗi test được bố cục như sau: dòng đầu là một số nguyên dương N (N <= 300) N là số làng, tiếp theo là một ma trân A[i, j] trong đó A[i][j] có giá trị bằng 1 là có đường đi từ làng i tới làng j và 0 nếu không có đường từ làng i tới làng j. Dữ liệu đảm bảo nếu có đường từ làng i tới làng j thì cũng sẽ có đường ngược lại.
+
+Output
+
+Với mỗi test, in ra sốvùng có trên bản đồ, số làng cô lập và số đường đóng vai trò là cầu.
+
+#include<iostream>
+using namespace std;
+int n ; 
+int A[301][301] ; 
+int B[301][301] ; 
+int vung[301] ; 
+int vsV[301] ; 
+int sv = 0 ;
+int svcl = 0 ; 
+int soCau  = 0 ; 
+int f = -1 ; 
+int r = -1 ; 
+int Q[100000] ; 
+int vsV1[301] ; 
+int par[301] ; 
+int vsV2[301] ; 
+void updateDSK(int x)
+{
+	B[x][0] = 0 ; 
+	for(int i = 1 ; i <= n ; i++)
+	{
+		if(A[x][i] == 1)
+		{
+			B[x][0] ++ ; 
+			B[x][B[x][0]] = i ; 
+		}
+	}
+}
+void bfs(int id)
+{
+	f= r = -1 ; 
+	Q[++r] = id ; 
+	while(f!=r)
+	{
+		id = Q[++f] ; 
+		for(int i = 1 ; i <= B[id][0] ; i++)
+		{
+			if(vsV[B[id][i]] == 0)
+			{
+				vsV[B[id][i]] = 1 ; 
+				Q[++r] = B[id][i] ; 
+			}
+		}
+	}
+}
+bool bfs1(int x , int y)
+{
+	vsV2[x] = 1 ; 
+	f= r = -1 ; 
+	Q[++r] = x ; 
+	while(f!=r)
+	{
+		x = Q[++f] ; 
+		for(int i = 1 ; i <= B[x][0] ; i++)
+		{
+			if(vsV2[B[x][i]] == 0)
+			{
+				vsV2[B[x][i]] == 1 ; 
+				if(B[x][i] == y)
+				{
+					return true ; 
+				}
+				Q[++r] = B[x][i] ; 
+			}
+		}
+	}
+	return false ; 
+}
+bool checCot(int x)
+{
+	for(int i = 1 ; i <= n ; i++)
+	{
+		if(A[i][x] != 0 )
+		{
+			return false ; 
+		}
+	}
+	return true ; 
+}
+int main()
+{
+	freopen("input.txt", "r", stdin);
+	int T;
+	cin >> T;
+	for(int tc=1 ; tc<=T ; tc++)
+	{
+		cin >> n ; 
+		sv = 0 ; 
+		svcl = 0 ; 
+		soCau = 0 ; 
+		for(int i = 0 ; i <= n ; i++)
+		{
+			vsV[i] = 0 ; 
+			for(int j = 0 ; j <= n ; j++)
+			{
+				B[i][j] = 0 ; 
+			} 
+		}
+		for(int i = 1 ; i <= n ; i++)
+		{
+			for(int j = 1 ; j <= n ; j++)
+			{
+				cin >> A[i][j] ; 
+				if(A[i][j] == 1)
+				{
+					B[i][0] ++ ; 
+					B[i][B[i][0]] = j ;
+				}
+			} 
+		}
+		for(int i = 1 ; i <= n ; i++)
+		{
+			for(int j = 1 ; j <= n ; j++)
+			{
+				if(i == j)
+				{
+					if(checCot(i))
+					{
+						svcl++ ; 
+					}
+				}
+			} 
+		}
+		for(int i = 1 ; i <= n ; i++)
+		{
+			if(vsV[i] == 0)
+			{
+				vsV[i] = 1 ; 
+				bfs(i) ; 
+				int count = 0 ; 
+				vsV1[i] = 1 ; 
+				sv++ ; 
+			}
+		}
+
+		for(int i = 1 ; i <= n ; i++)
+		{
+			for(int j = i ; j <= n ; j++)
+			{
+				if(A[i][j] == 1)
+				{
+					A[i][j] = A[j][i] = 0 ;
+					updateDSK(i) ; 
+					updateDSK(j) ; 
+
+					if(!bfs1(i,j))
+					{
+						soCau++ ; 
+					}
+					for(int k = 1 ; k <= n ; k++)
+					{
+						vsV2[k] = 0 ; 
+					}
+					A[i][j] = A[j][i] = 1 ;
+					updateDSK(i) ; 
+					updateDSK(j) ; 
+				}
+			} 
+		}
+		cout << sv << " " << svcl << " " << soCau << endl ; 
+	}
+	return 0;
+}
