@@ -585,6 +585,69 @@ Case #5
 836 282 474 809 199 848 862 489 120 786 554 444 340 429 90
 
 
+#include <iostream>
+using namespace std;
+int m,n;
+int a[35][35];
+int dx[]={-2,-1,1,2,1,-1};
+int dy[]={0,1,1,0,-1,-1};
+int visit[35][35];
+int Ans;
+
+
+void backtrack(int hang, int cot, int dem, int kq){
+	if (dem==4){
+		if (kq>Ans){
+			Ans=kq;
+		}
+		return;
+	}
+	for (int i=0;i<6;i++){
+		int row=hang+dx[i];
+		int col=cot+dy[i];
+		if (row>=1 && col>=1 && row<=2*m && col<=n && visit[row][col]==0){
+			visit[row][col]=1;
+			backtrack(row, col, dem+1, kq+a[row][col]);
+			backtrack(hang, cot, dem+1, kq+a[row][col]);
+			visit[row][col]=0;
+		}
+	}
+}
+int main(){
+	freopen ("input.txt","r",stdin);
+	int T;
+	cin >> T;
+	for (int tc=1; tc<=T; tc++){
+		cin >> n >> m;
+		for (int i=1; i<=2*m;i=i+2){
+			for (int j=1; j<=n;j++){
+				if (j%2==1){
+					cin >> a[i][j];
+					visit[i][j]=0;
+				}else{
+					cin >> a[i+1][j];
+					visit[i+1][j]=0;
+				}
+			}
+		}
+		Ans=0;
+		for (int i=1; i<=2*m;i=i+2){
+			for (int j=1; j<=n;j++){
+				if (j%2==1){
+					visit[i][j]=1;
+					backtrack(i,j,1,a[i][j]);
+					visit[i][j]=0;
+				}else{
+					visit[i+1][j]=1;
+					backtrack(i+1,j,1,a[i+1][j]);
+					visit[i+1][j]=0;
+				}
+			}
+		}
+		cout <<"Case #" << tc << endl << Ans*Ans << endl;
+	}
+	return 0;
+}
 
 import java.util.Scanner;
 
