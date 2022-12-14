@@ -235,3 +235,89 @@ int main(){
 #49 23851
 #50 18419
 
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+using namespace std ; 
+int n ; 
+int A[100] ; 
+int vs[100] ; 
+int kq = 0 ; 
+int rs[100] ; 
+void bt(int id , int sum)
+{
+	if(id == n)
+	{
+		if(kq < sum )
+		{
+			kq = sum ; 
+		}
+		return ; 
+	}
+
+	for(int i = 1 ; i <= n ; i++)
+	{
+		if(vs[i] == 0)
+		{
+			int x , y ; 
+			bool cx = false , cy = false; 
+			for(int j = i - 1 ; j >= 1 ; j--)
+			{
+				if(vs[j] == 0 )
+				{
+					cx = true ; 
+					x = A[j] ; 
+					break ; 
+				}
+			}
+			for(int j = i + 1 ; j <= n ; j++)
+			{
+				if(vs[j] == 0 )
+				{
+					cy = true ; 
+					y = A[j] ; 
+					break ; 
+				}
+			}
+			int tich ; 
+			if(cx && cy )
+			{
+				tich = x * y ; 
+			}
+			else if(cx && !cy)
+			{
+				tich = 1 * x ;
+			}
+			else if(!cx && cy)
+			{
+				tich = 1 * y ; 
+			}
+			else 
+			{
+				tich = A[i] ; 
+			}
+			vs[i] = 1 ; 
+			rs[id] = i ; 
+			bt(id+1 , sum + tich) ; 
+			vs[i] = 0 ; 
+		}
+	}
+}
+int main()
+{
+	freopen("input.txt" , "r" , stdin) ; 
+	int T ; 
+	cin >> T ; 
+	for(int tc = 1 ; tc <= T ; tc ++)
+	{
+		cin >> n ; 
+		kq = 0 ; 
+		for(int i = 1 ; i <= n ; i++)
+		{
+			cin >> A[i] ; 
+		}
+		bt(0,0) ; 
+		cout <<"#" << tc <<" " << kq << endl; 
+	}
+	return 0 ; 
+}
