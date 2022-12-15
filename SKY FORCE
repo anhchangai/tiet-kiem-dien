@@ -6,10 +6,12 @@ int n ;
 int xS , yS ; 
 int Map[13][5] ; 
 int vs[13][5] ; 
+int vsB[5][5] ; 
 int dx[3] = {-1,-1,-1} ; 
 int dy[3] = {0,-1,1} ; 
 int bomb = 1 ; 
-int kq = 0 ; 
+int kq = -1 ; 
+bool check = false ; 
 bool isSafe(int x , int y)
 {
 	if(x >= 0 && y >= 1 && x <= n && y <= 5)
@@ -26,6 +28,7 @@ void dungBomb(int x)
 		{
 			if(isSafe(i,j) && Map[i][j] == 2)
 			{
+				vsB[i][j] = 1 ; 
 				Map[i][j] = 0 ; 
 			}
 		}
@@ -37,9 +40,10 @@ void BTdungBomb(int x)
 	{
 		for(int j = 1 ; j <= 5 ; j++)
 		{
-			if(isSafe(i,j) && Map[i][j] == 2)
+			if(isSafe(i,j) && vsB[i][j] == 1)
 			{
-				Map[i][j] = 0 ; 
+				vsB[i][j] = 0 ; 
+				Map[i][j] = 2 ; 
 			}
 		}
 	}
@@ -60,12 +64,9 @@ void bt(int x , int y , int c)
 {
 	if(x == 0)
 	{
-		if(kq < c)
+		if(kq <= c)
 		{
-			kq = c ; 
-		}
-		else if(c < 0 && kq == 0 )
-		{
+			check = true ;
 			kq = c ; 
 		}
 		return ; 
@@ -97,6 +98,7 @@ void bt(int x , int y , int c)
 			bomb-- ; 
 			dungBomb(x) ; 
 			bt(xx,yy,c) ;
+			BTdungBomb(x) ; 
 			bomb++ ; 
 			vs[xx][yy] = 0 ; 
 		}
@@ -118,6 +120,7 @@ int main()
 	for(int tc = 1 ; tc <= T ; tc ++)
 	{
 		cin >> n ; 
+		check = false ; 
 		bomb = 1 ;
 		kq = 0 ; 
 		for(int i = 1 ; i <= n ; i++)
@@ -130,91 +133,13 @@ int main()
 		xS = n + 1 ; 
 		yS = 3 ; 
 		bt(xS,yS,0) ; 
-		if(kq >= 0 )
+		if(check)
 		{
 		cout <<"Case #" <<tc << endl << kq << endl ; 
 		}
 		else cout <<"Case #" <<tc << endl << -1 << endl ; 
 	}
 	return 0 ; 
-}
-
-
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <iostream>
-
-using namespace std;
-
-#define SIZE 12
-
-int map[SIZE][SIZE];
-int N;
-int best;
-
-void resetData() {
-	best = -1;
-	for (int i = 0; i < SIZE; ++i) {
-		for (int j = 0; j < 5; ++j) {
-			map[i][j] = 0;
-		}
-	}
-}
-
-void move(int row, int col, int coin, int ignoreEnemy, bool have_bomb) {
-	if (col < 0 || col > 4) return;
-
-	if (row < 0) {
-		if (best < coin) best = coin;
-		return;
-	}
-
-	//process current cell
-	if (map[row][col] == 1) {
-		++coin;
-	}
-	else if (map[row][col] == 2 && ignoreEnemy <= 0) {
-		if (coin > 0) --coin;
-		else return;
-	}
-
-	//scroll down bombed area
-	--ignoreEnemy;
-
-	//move up
-	move(row - 1, col, coin, ignoreEnemy, have_bomb);
-
-	//use bomb and move up
-	if (have_bomb) move(row - 1, col, coin, 5, false);
-
-	//move top-left
-	move(row - 1, col - 1, coin, ignoreEnemy, have_bomb);
-
-	//use bomb and move top-left
-	if (have_bomb) move(row - 1, col - 1, coin, 5, false);
-
-	//move top-right
-	move(row - 1, col + 1, coin, ignoreEnemy, have_bomb);
-
-	//use bomb and move top-right
-	if (have_bomb) move(row - 1, col + 1, coin, 5, false);
-}
-
-int main() {
-	freopen("input.txt", "r", stdin);
-	int T, testcase; cin >> T;
-	for (testcase = 1; testcase <= T; ++testcase) {
-		cin >> N;
-		resetData();
-		for (int i = 0; i < N; ++i) {
-			for (int j = 0; j < 5; ++j) {
-				cin >> map[i][j];
-			}
-		}
-		move(N, 2, 0, 0, true);
-		cout << "Case #" << testcase << " " << best << endl;
-	}
-	return 0;
 }
 
 50
