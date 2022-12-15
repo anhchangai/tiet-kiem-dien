@@ -1,0 +1,140 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+using namespace std ; 
+int n ; 
+int xS , yS ; 
+int Map[13][5] ; 
+int vs[13][5] ; 
+int dx[3] = {-1,-1,-1} ; 
+int dy[3] = {0,-1,1} ; 
+int bomb = 1 ; 
+int kq = 0 ; 
+bool isSafe(int x , int y)
+{
+	if(x >= 0 && y >= 1 && x <= n && y <= 5)
+	{
+		return true; 
+	}
+	return false ;
+}
+void dungBomb(int x)
+{
+	for(int i = x - 5 ; i <= x - 1 ; i++)
+	{
+		for(int j = 1 ; j <= 5 ; j++)
+		{
+			if(isSafe(i,j) && Map[i][j] == 2)
+			{
+				Map[i][j] = 0 ; 
+			}
+		}
+	}
+}
+void BTdungBomb(int x)
+{
+	for(int i = x - 5 ; i <= x - 1 ; i++)
+	{
+		for(int j = 1 ; j <= 5 ; j++)
+		{
+			if(isSafe(i,j) && Map[i][j] == 2)
+			{
+				Map[i][j] = 0 ; 
+			}
+		}
+	}
+}
+void xuat()
+{
+	for(int i = 1 ; i <= n ; i++)
+	{
+		for(int j = 1 ; j <= 5 ; j++)
+		{
+			cout << vs[i][j] << " " ; 
+		}
+		cout << endl ; 
+	}
+	cout << endl ; 
+}
+void bt(int x , int y , int c)
+{
+	if(x == 0)
+	{
+		if(kq < c)
+		{
+			kq = c ; 
+		}
+		else if(c < 0 && kq == 0 )
+		{
+			kq = c ; 
+		}
+		return ; 
+	}
+
+	for(int i = 0 ; i < 3 ; i++)
+	{
+		int xx = x + dx[i] ; 
+		int yy = y + dy[i] ; 
+
+		if(isSafe(xx,yy) && Map[xx][yy] == 0 && vs[xx][yy] == 0)
+		{
+			vs[xx][yy] = 1 ; 
+			//xuat(); 
+			bt(xx,yy,c) ; 
+			vs[xx][yy] = 0 ; 
+		}
+		if(isSafe(xx,yy) && Map[xx][yy] == 1 && vs[xx][yy] == 0)
+		{
+			vs[xx][yy] = 1 ; 
+			//xuat(); 
+			bt(xx,yy,c+1) ; 
+			vs[xx][yy] = 0 ; 
+		}
+		if(isSafe(xx,yy) && Map[xx][yy] == 2 && vs[xx][yy] == 0 && bomb == 1)
+		{
+			vs[xx][yy] = 1 ; 
+			//xuat(); 
+			bomb-- ; 
+			dungBomb(x) ; 
+			bt(xx,yy,c) ;
+			bomb++ ; 
+			vs[xx][yy] = 0 ; 
+		}
+		if(isSafe(xx,yy) && Map[xx][yy] == 2 && vs[xx][yy] == 0 && bomb == 0)
+		{
+			vs[xx][yy] = 1 ; 
+			//xuat(); 
+			bt(xx,yy,c-1) ; 
+			vs[xx][yy] = 0 ; 
+		}
+
+	}
+}
+int main()
+{
+	freopen("input.txt" , "r" , stdin) ; 
+	int T ; 
+	cin >> T ;
+	for(int tc = 1 ; tc <= T ; tc ++)
+	{
+		cin >> n ; 
+		bomb = 1 ;
+		kq = 0 ; 
+		for(int i = 1 ; i <= n ; i++)
+		{
+			for(int j = 1 ; j <= 5 ; j++)
+			{
+				cin >> Map[i][j] ; 
+			}
+		}
+		xS = n + 1 ; 
+		yS = 3 ; 
+		bt(xS,yS,0) ; 
+		if(kq >= 0 )
+		{
+		cout <<"Case #" <<tc << endl << kq << endl ; 
+		}
+		else cout <<"Case #" <<tc << endl << -1 << endl ; 
+	}
+	return 0 ; 
+}
